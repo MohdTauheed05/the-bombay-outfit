@@ -1,29 +1,32 @@
-import { initializeApp, getApps, getApp, cert, type App } from 'firebase-admin/app'
+import { initializeApp, getApps, cert } from 'firebase-admin/app'
 import { getFirestore } from 'firebase-admin/firestore'
 import { getAuth } from 'firebase-admin/auth'
 
-// SERVER-ONLY. Never import this file from a 'use client' component.
-// Requires FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY
-// (from your Firebase service account JSON) set as environment variables in
-// Vercel. These are secrets — do NOT prefix them with NEXT_PUBLIC_.
-function getAdminApp(): App {
-  if (getApps().length) return getApp()
+const projectId = process.env.FIREBASE_PROJECT_ID
+const clientEmail = process.env.FIREBASE_CLIENT_EMAIL
+// Fix: Convert escaped literal '\n' strings into actual line breaks
+const privateKey = process.env.FIREBASE_PRIVATE_KEY
+  ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
+  : undefined
 
-  const projectId = process.env.FIREBASE_PROJECT_ID
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL
-  // Vercel env vars store literal "\n" — convert back to real newlines.
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+function getAdminApp() {
+  if (getApps().length > 0) {
+    return getApps()[0]
+  }
 
   if (!projectId || !clientEmail || !privateKey) {
-    throw new Error(
-      'Missing Firebase Admin credentials. Set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY in your environment.',
-    )
+    throw new Error('Missing Firebase Admin environment variables')
   }
 
   return initializeApp({
-    credential: cert({ projectId, clientEmail, privateKey }),
+    credential: cert({
+      projectId,
+      clientEmail,
+      privateKey,
+    }),
   })
 }
 
-export const adminDb = getFirestore(getAdminApp())
-export const adminAuth = getAuth(getAdminApp())
+const adminApp = getAdminApp()
+export const adminDb = getFirestore(adminApp)
+export const adminAuth = getAuth(adminApp)
