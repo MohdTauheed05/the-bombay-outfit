@@ -1,0 +1,22 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Product catalog: anyone can read (the storefront needs this),
+    // nobody can write directly from a browser. All writes happen
+    // server-side through the /api/admin/* routes using the Firebase
+    // Admin SDK, which is authenticated with a service account and
+    // bypasses these rules entirely. That's the real security boundary
+    // for writes — this file only needs to block direct client writes.
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Deny everything else by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
