@@ -1,11 +1,11 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { Star, Heart, Minus, Plus, Zap, Truck, ShieldCheck, ChevronDown, Check } from 'lucide-react'
+import { Star, Heart, Minus, Plus, Zap, Truck, ShieldCheck, ChevronDown, Check, MessageCircle } from 'lucide-react'
 import { useStore } from './store-provider'
 import { type Product, formatINR, discountPct } from '@/lib/products'
 import { getRating, getReviewCount, getStock, getSpecifications, getReviews } from '@/lib/product-meta'
+import { buildWhatsAppLink, buildProductInquiryMessage } from '@/lib/whatsapp'
 import { cn } from '@/lib/utils'
 
 function StarRating({ rating, size = 'h-3.5 w-3.5' }: { rating: number; size?: string }) {
@@ -55,7 +55,6 @@ function AccordionSection({
 }
 
 export function ProductInfo({ product }: { product: Product }) {
-  const router = useRouter()
   const { addToCart, toggleWishlist, isWishlisted } = useStore()
   const [size, setSize] = useState<string>(product.sizes.length === 1 ? product.sizes[0] : '')
   const [qty, setQty] = useState(1)
@@ -75,10 +74,10 @@ export function ProductInfo({ product }: { product: Product }) {
     addToCart(product, size || 'One Size', qty)
   }
 
-  const handleBuyNow = () => {
+  const handleWhatsAppOrder = () => {
     if (needsSize || !stock.inStock) return
-    addToCart(product, size || 'One Size', qty)
-    router.push('/checkout')
+    const message = buildProductInquiryMessage(product)
+    window.open(buildWhatsAppLink(message), '_blank', 'noopener,noreferrer')
   }
 
   return (
@@ -216,15 +215,16 @@ export function ProductInfo({ product }: { product: Product }) {
       <button
         type="button"
         disabled={needsSize || !stock.inStock}
-        onClick={handleBuyNow}
-        className="mt-3 w-full border border-primary py-3.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary transition-colors hover:bg-primary hover:text-primary-foreground disabled:cursor-not-allowed disabled:opacity-40"
+        onClick={handleWhatsAppOrder}
+        className="mt-3 flex w-full items-center justify-center gap-2 border border-[#25D366] py-3.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#25D366] transition-colors hover:bg-[#25D366] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
       >
-        Buy Now
+        <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
+        Order via WhatsApp
       </button>
 
       <div className="mt-5 flex items-center gap-2 text-[11px] text-muted-foreground">
         <ShieldCheck className="h-4 w-4 shrink-0 text-gold" strokeWidth={1.5} />
-        Secure Razorpay / UPI checkout &middot; 7-day returns
+        Cash on Delivery available &middot; 7-day returns
       </div>
 
       {/* Accordion */}
