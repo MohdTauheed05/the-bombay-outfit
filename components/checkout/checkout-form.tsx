@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, type FormEvent } from 'react'
-import { CreditCard, Smartphone, Lock, ChevronRight } from 'lucide-react'
+import { ChevronRight, MessageCircle, Wallet } from 'lucide-react'
 import { formatINR } from '@/lib/products'
 import { cn } from '@/lib/utils'
 
@@ -22,7 +22,6 @@ export type ShippingAddress = {
   state: string
   pincode: string
 }
-export type PaymentMethod = 'card' | 'upi'
 
 const inputClass =
   'w-full border border-border bg-background px-3.5 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-primary'
@@ -59,7 +58,7 @@ export function CheckoutForm({
 }: {
   shippingMethod: ShippingMethodId
   onShippingMethodChange: (id: ShippingMethodId) => void
-  onSubmit: (data: { contact: ContactInfo; address: ShippingAddress; payment: PaymentMethod }) => void
+  onSubmit: (data: { contact: ContactInfo; address: ShippingAddress }) => void
   submitting: boolean
 }) {
   const [contact, setContact] = useState<ContactInfo>({ email: '', phone: '' })
@@ -71,13 +70,10 @@ export function CheckoutForm({
     state: '',
     pincode: '',
   })
-  const [payment, setPayment] = useState<PaymentMethod>('card')
-  const [card, setCard] = useState({ number: '', name: '', expiry: '', cvv: '' })
-  const [upiId, setUpiId] = useState('')
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    onSubmit({ contact, address, payment })
+    onSubmit({ contact, address })
   }
 
   return (
@@ -191,90 +187,25 @@ export function CheckoutForm({
       {/* Step 4: Payment */}
       <section>
         <StepHeading n={4} title="Payment" />
-        <div className="mb-4 flex gap-2.5">
-          <button
-            type="button"
-            onClick={() => setPayment('card')}
-            className={cn(
-              'flex flex-1 items-center justify-center gap-2 border px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] transition-colors',
-              payment === 'card' ? 'border-primary bg-primary text-primary-foreground' : 'border-border hover:border-primary',
-            )}
-          >
-            <CreditCard className="h-4 w-4" strokeWidth={1.5} /> Card
-          </button>
-          <button
-            type="button"
-            onClick={() => setPayment('upi')}
-            className={cn(
-              'flex flex-1 items-center justify-center gap-2 border px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] transition-colors',
-              payment === 'upi' ? 'border-primary bg-primary text-primary-foreground' : 'border-border hover:border-primary',
-            )}
-          >
-            <Smartphone className="h-4 w-4" strokeWidth={1.5} /> UPI / Wallet
-          </button>
-        </div>
-
-        {payment === 'card' ? (
-          <div className="grid gap-4">
-            <Field
-              label="Card Number"
-              required
-              inputMode="numeric"
-              placeholder="1234 5678 9012 3456"
-              maxLength={19}
-              value={card.number}
-              onChange={(e) => setCard((c) => ({ ...c, number: e.target.value }))}
-            />
-            <Field
-              label="Name on Card"
-              required
-              placeholder="As shown on card"
-              value={card.name}
-              onChange={(e) => setCard((c) => ({ ...c, name: e.target.value }))}
-            />
-            <div className="grid grid-cols-2 gap-4">
-              <Field
-                label="Expiry (MM/YY)"
-                required
-                placeholder="MM/YY"
-                maxLength={5}
-                value={card.expiry}
-                onChange={(e) => setCard((c) => ({ ...c, expiry: e.target.value }))}
-              />
-              <Field
-                label="CVV"
-                required
-                inputMode="numeric"
-                type="password"
-                maxLength={4}
-                placeholder="123"
-                value={card.cvv}
-                onChange={(e) => setCard((c) => ({ ...c, cvv: e.target.value }))}
-              />
-            </div>
+        <div className="flex items-start gap-3 border border-gold/40 bg-gold/5 px-4 py-4">
+          <Wallet className="mt-0.5 h-5 w-5 shrink-0 text-gold" strokeWidth={1.5} />
+          <div>
+            <p className="text-sm font-medium">Cash on Delivery</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Pay in cash when your order arrives. No online payment required — you&apos;ll confirm the final
+              order details over WhatsApp before it ships.
+            </p>
           </div>
-        ) : (
-          <Field
-            label="UPI ID"
-            required
-            placeholder="yourname@upi"
-            value={upiId}
-            onChange={(e) => setUpiId(e.target.value)}
-          />
-        )}
-
-        <p className="mt-4 flex items-center gap-1.5 text-[11px] text-muted-foreground">
-          <Lock className="h-3.5 w-3.5 text-gold" strokeWidth={1.5} /> Payments are encrypted and processed securely
-          via Razorpay.
-        </p>
+        </div>
       </section>
 
       <button
         type="submit"
         disabled={submitting}
-        className="group flex w-full items-center justify-center gap-2 bg-primary py-4 text-[12px] font-semibold uppercase tracking-[0.18em] text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+        className="group flex w-full items-center justify-center gap-2 bg-[#25D366] py-4 text-[12px] font-semibold uppercase tracking-[0.18em] text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {submitting ? 'Placing Order\u2026' : 'Place Order'}
+        <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
+        {submitting ? 'Opening WhatsApp\u2026' : 'Complete Order on WhatsApp'}
         {!submitting && (
           <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" strokeWidth={1.5} />
         )}
