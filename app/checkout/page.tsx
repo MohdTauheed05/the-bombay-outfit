@@ -6,9 +6,10 @@ import { useRouter } from 'next/navigation'
 import { ChevronDown, ShoppingBag } from 'lucide-react'
 import { SiteShell } from '@/components/layout/site-shell'
 import { useStore } from '@/components/store/store-provider'
-import { CheckoutForm, SHIPPING_METHODS, type ShippingMethodId } from '@/components/checkout/checkout-form'
+import { CheckoutForm, SHIPPING_METHODS, type ShippingMethodId, type ContactInfo, type ShippingAddress } from '@/components/checkout/checkout-form'
 import { OrderSummary } from '@/components/checkout/order-summary'
 import { formatINR } from '@/lib/products'
+import { buildWhatsAppLink, buildCartOrderMessage } from '@/lib/whatsapp'
 import { cn } from '@/lib/utils'
 
 function generateOrderNumber() {
@@ -26,7 +27,7 @@ export default function CheckoutPage() {
   const shippingCost = SHIPPING_METHODS.find((m) => m.id === shippingMethod)?.price ?? 0
   const estimatedTotal = subtotal + shippingCost
 
-  const handleSubmit = () => {
+  const handleSubmit = (data: { contact: ContactInfo; address: ShippingAddress }) => {
     if (cart.length === 0) return
     setSubmitting(true)
 
@@ -37,6 +38,11 @@ export default function CheckoutPage() {
       day: 'numeric',
       month: 'long',
     })
+
+    const shippingLabel = SHIPPING_METHODS.find((m) => m.id === shippingMethod)?.label ?? 'Standard Shipping'
+    const fullAddress = [data.address.address1, data.address.address2, data.address.city, data.address.state, data.address.pincode]
+      .filter(Boolean)
+      .join(', ')
 
     const order = {
       orderNumber,
@@ -58,11 +64,20 @@ export default function CheckoutPage() {
       sessionStorage.setItem('tbo-last-order', JSON.stringify(order))
     }
 
-    // Simulate payment processing latency.
-    setTimeout(() => {
-      clearCart()
-      router.push(`/checkout/success?order=${orderNumber}`)
-    }, 900)
+    const message = buildCartOrderMessage({
+      cart,
+      subtotal,
+      shippingLabel,
+      shippingCost,
+      total: estimatedTotal,
+      contactName: data.address.fullName,
+      phone: data.contact.phone,
+      address: fullAddress,
+    })
+    window.open(buildWhatsAppLink(message), '_blank', 'noopener,noreferrer')
+
+    clearCart()
+    router.push(`/checkout/success?order=${orderNumber}`)
   }
 
   if (cart.length === 0) {
