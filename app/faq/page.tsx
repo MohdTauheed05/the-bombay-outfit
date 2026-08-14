@@ -48,13 +48,13 @@ const FAQS: Faq[] = [
     id: 'pay-1',
     category: 'Payment',
     q: 'What payment methods do you accept?',
-    a: 'We accept all major credit and debit cards, UPI, net banking, popular digital wallets, and cash on delivery on select pincodes, all processed securely via Razorpay.',
+    a: 'We currently accept Cash on Delivery only. Place your order via WhatsApp and pay in cash when it arrives at your door \u2014 no online payment is required.',
   },
   {
     id: 'pay-2',
     category: 'Payment',
-    q: 'Is it safe to save my card details?',
-    a: 'Yes. Card details are tokenised and stored by our PCI-DSS compliant payment partner, Razorpay \u2014 we never store your full card number on our servers.',
+    q: 'How do I place an order?',
+    a: 'Tap "Order via WhatsApp" on any product, or "Complete Order on WhatsApp" at checkout. We\u2019ll confirm your order details with you directly over WhatsApp.',
   },
   {
     id: 'pay-3',
