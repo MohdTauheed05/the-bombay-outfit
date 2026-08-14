@@ -202,7 +202,7 @@ export function CartDrawer() {
                     Proceed to Checkout
                   </Link>
                   <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
-                    <ShieldCheck className="h-3.5 w-3.5 text-gold" strokeWidth={1.5} /> Secure Razorpay / UPI Checkout
+                    <ShieldCheck className="h-3.5 w-3.5 text-gold" strokeWidth={1.5} /> Cash on Delivery &middot; Order via WhatsApp
                   </p>
                 </div>
               </>
