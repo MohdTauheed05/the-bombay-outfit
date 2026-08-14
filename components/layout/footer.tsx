@@ -1,7 +1,9 @@
 'use client'
 
 import Link from 'next/link'
+import { MessageCircle } from 'lucide-react'
 import { slugifyCategory } from '@/lib/products'
+import { buildWhatsAppLink, buildGeneralInquiryMessage } from '@/lib/whatsapp'
 
 const columns = [
   {
@@ -65,6 +67,16 @@ export function Footer() {
                 </button>
               </form>
             </div>
+
+            <a
+              href={buildWhatsAppLink(buildGeneralInquiryMessage())}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center gap-2 border border-[#25D366] px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#25D366] transition-colors hover:bg-[#25D366] hover:text-white"
+            >
+              <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
+              Chat on WhatsApp
+            </a>
           </div>
 
           {columns.map((col) => (
@@ -93,12 +105,8 @@ export function Footer() {
             &copy; {new Date().getFullYear()} THE BOMBAY OUTFIT. All rights reserved. GST Invoice Available.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] uppercase tracking-[0.14em] text-primary-foreground/60">
-            <span>UPI</span>
-            <span>RuPay</span>
-            <span>Visa</span>
-            <span>Mastercard</span>
-            <span>Razorpay</span>
-            <span>COD</span>
+            <span>Cash on Delivery</span>
+            <span>Order via WhatsApp</span>
           </div>
         </div>
       </div>
