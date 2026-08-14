@@ -57,8 +57,8 @@ function SuccessPageInner() {
           <p className="mt-6 text-[11px] font-medium uppercase tracking-[0.24em] text-gold">Order Confirmed</p>
           <h1 className="mt-2 font-serif text-3xl font-bold leading-tight sm:text-4xl">Thank You for Your Order</h1>
           <p className="mt-3 max-w-md text-sm text-muted-foreground">
-            A confirmation has been sent to your email. Our concierge team will keep you updated as your order is
-            prepared and shipped.
+            Your order details have been sent to us on WhatsApp. Our concierge team will confirm your order there
+            and keep you updated as it&apos;s prepared and shipped. You&apos;ll pay by Cash on Delivery.
           </p>
 
           <button
@@ -120,7 +120,7 @@ function SuccessPageInner() {
               ))}
             </ul>
             <div className="flex justify-between border-t border-border p-5 text-base font-medium">
-              <span>Total Paid</span>
+              <span>Order Total (Pay via COD)</span>
               <span>{formatINR(order.total)}</span>
             </div>
           </div>
