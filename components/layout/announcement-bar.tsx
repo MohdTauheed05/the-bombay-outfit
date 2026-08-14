@@ -5,9 +5,9 @@ export function AnnouncementBar() {
         <p className="text-center text-[10px] font-medium uppercase tracking-[0.18em] sm:text-[11px] sm:tracking-[0.25em]">
           <span className="font-serif italic tracking-normal text-gold">The Bombay Outfit</span>
           <span className="mx-2 opacity-40">|</span>
-          Express Same-Day Delivery in Mumbai &amp; Delhi
+          🚚 Cash on Delivery Available
           <span className="mx-2 hidden opacity-40 sm:inline">|</span>
-          <span className="hidden sm:inline">Free Nationwide Shipping</span>
+          <span className="hidden sm:inline">Fast Nationwide Shipping 💳</span>
           <span className="mx-2 hidden opacity-40 md:inline">|</span>
           <span className="hidden md:inline">
             Code: <span className="text-gold">BOMBAY10</span>
